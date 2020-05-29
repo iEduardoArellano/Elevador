@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<!-- saved from url=(0038)http://arkord.byethost31.com/elevator/ -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title></title>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="./arkord.byethost31.com_files/bootstrap.min.css" rel="stylesheet">
+    <link href="./arkord.byethost31.com_files/elevator.css" rel="stylesheet">
+    <script src="./arkord.byethost31.com_files/jquery-3.2.1.min.js.descarga"></script>
+    <script src="./arkord.byethost31.com_files/bootstrap.min.js.descarga"></script>
+    <script src="./arkord.byethost31.com_files/elevator.js.descarga"></script>
+</head>
+
+<body>
+    <section class="contianer">
+        <section class="row">
+            <div class="col-md-offset-3 col-md-6">
+                <h1>Elevator</h1>
+                <blockquote>
+                    <p>Please enter data for the elevator test</p>
+                </blockquote>
+                <form action="http://arkord.byethost31.com/elevator/" method="GET" role="form">
+                    <legend>Settings</legend>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="direction">Initial direction</label>
+                            <select name="direction" id="direction" class="form-control">
+                                <option value="stand">stand</option>
+                                <option value="up">up</option>
+                                <option value="down">down</option>
+                                <option value="maintenance">maintenance</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="current">Current floor</label>
+                            <input type="number" min="1" name="current" id="current" value="1" class="form-control">
+                        </div>
+                    </div>
+                    <legend>Requests</legend>
+                    <div class="col-md-12 requests">
+                        <div class="request row">
+                            <div class="col-md-5">
+                                <div class="form-group">
+                                    <label for="start">From floor</label>
+                                    <input type="number" min="1" name="start" value="6" class="form-control start">
+                                </div>
+                            </div>
+                            <div class="col-md-5">
+                                <div class="form-group">
+                                    <label for="end">To floor</label>
+                                    <input type="number" min="1" name="end" value="1" class="form-control end">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="request row">
+                            <div class="col-md-5">
+                                <div class="form-group">
+                                    <label for="start">From floor</label>
+                                    <input type="number" min="1" name="start" value="5" class="form-control start">
+                                </div>
+                            </div>
+                            <div class="col-md-5">
+                                <div class="form-group">
+                                    <label for="end">To floor</label>
+                                    <input type="number" min="1" name="end" value="7" class="form-control end">
+                                </div>
+                            </div>
+                            <div class="col-md-1">
+                                <i class="glyphicon glyphicon-remove-sign text-danger remove-request" title="remove" role="button"></i>
+                            </div>
+                        </div>
+                        <div class="request row">
+                            <div class="col-md-5">
+                                <div class="form-group">
+                                    <label for="start">From floor</label>
+                                    <input type="number" min="1" name="start" value="3" class="form-control start">
+                                </div>
+                            </div>
+                            <div class="col-md-5">
+                                <div class="form-group">
+                                    <label for="end">To floor</label>
+                                    <input type="number" min="1" name="end" value="1" class="form-control end">
+                                </div>
+                            </div>
+                            <div class="col-md-1">
+                                <i class="glyphicon glyphicon-remove-sign text-danger remove-request" title="remove" role="button"></i>
+                            </div>
+                        </div>
+                        <div class="request row">
+                            <div class="col-md-5">
+                                <div class="form-group">
+                                    <label for="start">From floor</label>
+                                    <input type="number" min="1" name="start" value="1" class="form-control start">
+                                </div>
+                            </div>
+                            <div class="col-md-5">
+                                <div class="form-group">
+                                    <label for="end">To floor</label>
+                                    <input type="number" min="1" name="end" value="7" class="form-control end">
+                                </div>
+                            </div>
+                            <div class="col-md-1">
+                                <i class="glyphicon glyphicon-remove-sign text-danger remove-request" title="remove" role="button"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <button type="button" class="btn btn-primary btn-sm" id="add-request"><i class="glyphicon glyphicon-plus"></i> Add request</button>
+                    </div>
+                    <legend>Maintenance Floors</legend>
+                    <div class="col-md-12">
+                        <div class="row">
+                            <div class="col-md-5">
+                                <div class="form-group">
+                                    <label for="start1">Floor</label>
+                                    <input type="number" min="1" name="floor" value="2" class="form-control maintenance-floor">
+                                </div>
+                            </div>
+                            <div class="col-md-5">
+                                <div class="form-group">
+                                    <label for="end1">Floor</label>
+                                    <input type="number" min="1" name="floor" value="4" class="form-control maintenance-floor">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <button type="button" class="btn btn-primary btn-sm" id="process"><i class="glyphicon glyphicon-cog"></i> Process</button>
+                    </div>
+                </form>
+            </div>
+        </section>
+    </section>
+
+    <div class="modal fade" id="modal-results">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h4 class="modal-title">Results</h4>
+                </div>
+                <div class="modal-body row">
+                    <div class="col-md-6 text-center" id="results-text">
+
+                    </div>
+                    <div class="col-md-6  text-center" id="results-graph">
+
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+</body></html>

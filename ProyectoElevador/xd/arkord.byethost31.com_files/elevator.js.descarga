@@ -1,0 +1,127 @@
+var elevator = {
+    addRequest: function() {
+        var requestTemplate = "<div class=\"request row\"> \
+                                                    <div class=\"col-md-5\"> \
+                                                        <div class=\"form-group\"> \
+                                                            <label for=\"start\">From floor</label> \
+                                                            <input type=\"number\" min=\"1\" name=\"start\" value=\"6\" class=\"form-control start\"> \
+                                                        </div> \
+                                                    </div> \
+                                                    <div class=\"col-md-5\"> \
+                                                        <div class=\"form-group\"> \
+                                                            <label for=\"end\">To floor</label> \
+                                                            <input type=\"number\" min=\"1\" name=\"end\" value=\"3\" class=\"form-control end\"> \
+                                                        </div> \
+                                                    </div> \
+                                                    <div class=\"col-md-1\"> \
+                                                        <i class=\"glyphicon glyphicon-remove-sign text-danger remove-request\" title=\"remove\" role=\"button\"></i> \
+                                                    </div> \
+                                                </div>";
+
+        $('.requests').append(requestTemplate);
+    },
+    removeRequest: function($item) {
+        $item.parents('.request').remove();
+    },
+    showResults: function(data) {
+        var graphFloors = Math.max.apply(Math, data[1]);
+
+        var resultsTemplate = "<div class=\"col-md-12 request-text\"> \
+                                                            <span><strong>#</strong>{{number}}</span> \
+                                                            <span><strong>Start </strong>{{start}}</span> \
+                                                            <span><strong>End </strong>{{end}}</span> \
+                                                            <span><i class=\"glyphicon glyphicon-arrow-{{direction}}\"></i></span> \
+                                                        </div>";
+        var graphTemplate = "<div class=\"col-md-12 request-graph bg-info\" data-floor=\"{{number}}\"> \
+                                                            <span><strong>Floor </strong>{{floor}}</span> \
+                                                            <span><i class=\"glyphicon glyphicon-arrow-{{direction}}\"></i></span> \
+                                                        </div>";
+        var elevatorTemplate = "<div class=\"col-md-12 elevator bg-primary\"></div>";
+
+        $('#results-text *, #results-graph *').remove();
+        $.each(data[0], function(i, item) {
+            var resultHTML = resultsTemplate;
+            resultHTML = resultHTML.replace("{{number}}", i + 1);
+            resultHTML = resultHTML.replace("{{start}}", item.start);
+            resultHTML = resultHTML.replace("{{end}}", item.end);
+            resultHTML = resultHTML.replace("{{direction}}", item.direction);
+
+            $('#results-text').append(resultHTML);
+        });
+
+        $('#results-text').append("<code>Path:</code>");
+        $.each(data[1], function(i, item) {
+            $('#results-text').append("<code>" + item + "</code>");
+        });
+
+
+        for (var i = 1; i <= graphFloors; i++) {
+            var graphHTML = graphTemplate;
+            graphHTML = graphHTML.replace("{{number}}", i);
+            graphHTML = graphHTML.replace("{{floor}}", i);
+
+            $('#results-graph').prepend(graphHTML);
+        }
+
+        var bottom = ($('#current').val() - 1) * 32;
+        var $elevator = $(elevatorTemplate).appendTo('#results-graph');
+        $elevator.css('bottom', bottom);
+
+        $.each(data[1], function(i, floor) {
+            var bottom = (floor - 1) * 32;
+            $elevator.animate({ 'bottom': bottom }, { duration: 1000, queue: true }).delay(2000);
+        });
+    }
+}
+
+$(function() {
+    var $addButton = $('#add-request');
+    var $processButton = $('#process');
+
+    $('#modal-results').modal({ show: false });
+
+    $addButton.on('click', function() {
+        elevator.addRequest();
+    });
+
+    $('.requests').on('click', '.remove-request', function() {
+        elevator.removeRequest($(this));
+    });
+
+    $processButton.on('click', function() {
+        var requests = new Array();
+        var maintenanceFloors = new Array();
+
+        $('.maintenance-floor').each(function() {
+            maintenanceFloors.push($(this).val());
+        });
+        $('.request').each(function() {
+            var request = {
+                start: $(this).find('.start').val(),
+                end: $(this).find('.end').val()
+            }
+            requests.push(request);
+        });
+        $processButton.prop('disabled', true);
+
+        $.ajax({
+            type: "get",
+            url: "php/elevator.php",
+            dataType: "json",
+            data: {
+                action: "getResults",
+                rq: JSON.stringify(requests),
+                maintenance: maintenanceFloors,
+                current: $('#current').val(),
+                direction: $('#direction').val()
+            }
+        }).done(function(data) {
+            console.log(data);
+            $('#modal-results').modal('show');
+            elevator.showResults(data);
+            $processButton.prop('disabled', false);
+        });
+
+    });
+
+});
